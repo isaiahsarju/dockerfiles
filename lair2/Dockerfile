@@ -14,8 +14,8 @@ RUN tar -zxvf mongodb.tgz
 
 # Install Lair App
 WORKDIR /root/lair
-RUN wget https://github.com/lair-framework/lair/releases/download/v2.2.0/lair-v2.2.0-linux-amd64.tar.gz
-RUN tar -zxvf lair-v2.2.0-linux-amd64.tar.gz
+RUN wget https://github.com/lair-framework/lair/releases/download/v2.3.0/lair-v2.3.0-linux-amd64.tar.gz
+RUN tar -zxvf lair-v2.3.0-linux-amd64.tar.gz
 WORKDIR /root/lair/bundle
 RUN /bin/bash -c 'curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash \
 	&& source /root/.bashrc \
