@@ -1,6 +1,4 @@
-#From ubuntu base
-#FROM kalilinux/kali-linux-docker
-FROM ubuntu
+FROM kalilinux/kali-linux-docker
 WORKDIR /root
 RUN apt-get update
 RUN apt-get -y install theharvester
