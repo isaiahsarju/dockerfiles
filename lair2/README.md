@@ -2,7 +2,7 @@
 
 ## Build docker image
 Edit Dockerfile as you like (as versions change)
-```docker build -t lair2 ```
+```docker build -t lair2 . ```
 ## Create docker data container for data
 ```docker create -v /root/lair/db --name lairdata lair2 /bin/true```
 
