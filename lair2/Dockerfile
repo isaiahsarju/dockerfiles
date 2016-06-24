@@ -5,23 +5,25 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get -y install curl
 RUN apt-get -y install wget
-
+RUN apt-get -y install python
+RUN apt-get -y install make
+RUN apt-get -y install g++
 # Install MongoDB
 WORKDIR /root/lair
 RUN mkdir /root/lair/db
-RUN curl -o /root/lair/mongodb.tgz https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1404-3.0.6.tgz
+RUN curl -o /root/lair/mongodb.tgz https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.2.7.tgz
 RUN tar -zxvf mongodb.tgz
 
 # Install Lair App
 WORKDIR /root/lair
-RUN wget https://github.com/lair-framework/lair/releases/download/v2.2.0/lair-v2.2.0-linux-amd64.tar.gz
-RUN tar -zxvf lair-v2.2.0-linux-amd64.tar.gz
+RUN wget https://github.com/lair-framework/lair/releases/download/v2.4.1/lair-v2.4.1-linux-amd64.tar.gz
+RUN tar -zxvf lair-v2.4.1-linux-amd64.tar.gz
 WORKDIR /root/lair/bundle
 RUN /bin/bash -c 'curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash \
 	&& source /root/.bashrc \
 	&& source /root/.nvm/nvm.sh \
-	&& nvm install v0.10.40 \
-	&& nvm use v0.10.40 \
+	&& nvm install v0.10.41 \
+	&& nvm use v0.10.41 \
 	&& cd /root/lair/bundle/programs/server \
 	&& npm install'
 
@@ -39,6 +41,6 @@ RUN printf '0.0.0.0:11013\ntls cert.pem key.pem\nproxy /api localhost:11015\npro
 
 # Create start.sh
 WORKDIR /root/lair
-RUN printf 'rm db/mongod.lock\n./mongodb-linux-x86_64-ubuntu1404-3.0.6/bin/mongod --dbpath=/root/lair/db --bind_ip=localhost --quiet --nounixsocket --replSet rs0 1>&- 2>&- &\nsleep 15s\nexport ROOT_URL=http://localhost\nexport PORT=11014\nexport MONGO_URL=mongodb://localhost:27017/lair\nexport MONGO_OPLOG_URL=mongodb://localhost:27017/local\nsource /root/.bashrc\nsource /root/.nvm/nvm.sh\nnvm use v0.10.40\n./mongodb-linux-x86_64-ubuntu1404-3.0.6/bin/mongo --eval '\''rs.initiate({_id:"rs0", members: [{_id: 1, host: "localhost:27017"}]})'\'' admin 1>&- 2>&-\nsleep 3s\ncd bundle\nnode main.js&\ncd ..\nexport API_LISTENER=localhost:11015\n./api-server_linux_amd64&\n./caddy --conf=Caddyfile&\nwhile true; do sleep 1000; done\n' > start.sh
+RUN printf 'rm db/mongod.lock\n./mongodb-linux-x86_64-ubuntu1604-3.2.7/bin/mongod --dbpath=/root/lair/db --bind_ip=localhost --quiet --nounixsocket --replSet rs0 1>&- 2>&- &\nsleep 15s\nexport ROOT_URL=http://localhost\nexport PORT=11014\nexport MONGO_URL=mongodb://localhost:27017/lair\nexport MONGO_OPLOG_URL=mongodb://localhost:27017/local\nsource /root/.bashrc\nsource /root/.nvm/nvm.sh\nnvm use v0.10.41\n./mongodb-linux-x86_64-ubuntu1604-3.2.7/bin/mongo --eval '\''rs.initiate({_id:"rs0", members: [{_id: 1, host: "localhost:27017"}]})'\'' admin 1>&- 2>&-\nsleep 3s\ncd bundle\nnode main.js&\ncd ..\nexport API_LISTENER=localhost:11015\n./api-server_linux_amd64&\n./caddy --conf=Caddyfile&\nwhile true; do sleep 1000; done\n' > start.sh
 RUN chmod +x start.sh
 CMD ["/bin/bash","-c","/root/lair/start.sh"]
