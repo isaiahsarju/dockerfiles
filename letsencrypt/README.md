@@ -15,7 +15,7 @@ docker build -t letsencrypt .
 ~~~~
 To Run
 ~~~~
-docker -it --name=letsencrypt letsencrypt
+docker run -it --name=letsencrypt letsencrypt
 ~~~~
 Then run
 ~~~~
